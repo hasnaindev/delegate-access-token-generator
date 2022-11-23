@@ -1,0 +1,46 @@
+<div class="container">
+  <h1 class="heading nes-text">
+    Generate <span class="is-success">Shopify</span><br />Delegate Access Token<br />
+  </h1>
+
+  <div class="nes-container with-title is-dark">
+    <h2 class="title">Generate DAT</h2>
+    <form id="form">
+      <div class="nes-field">
+        <label for="store-name">Store name</label>
+        <input
+          id="store-name"
+          type="text"
+          class="nes-input"
+          placeholder="Shopify store name"
+        />
+      </div>
+      <div class="nes-field">
+        <label for="admin-api-access-token">Admin API access token</label>
+        <input
+          id="admin-api-access-token"
+          type="text"
+          class="nes-input"
+          placeholder="Can be found in Shopify admin"
+        />
+      </div>
+      <div class="nes-field form-submit-field">
+        <button type="submit" class="nes-btn is-primary">Generate DAT</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="dialog-container" id="dialog-container">
+  <div class="nes-dialog" id="dialog-dark">
+    <div>
+      <div class="nes-field">
+        <p class="title">Delegate Access Token</p>
+        <input type="text" class="nes-input" id="content" />
+      </div>
+      <div class="dialog-menu nes-field">
+        <button class="nes-btn is-primary">Copy DAT!!</button>
+      </div>
+    </div>
+  </div>
+</div>
