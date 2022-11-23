@@ -19,12 +19,16 @@
     fetchDelegateAccessToken({ storeName, adminApiAccessToken })
       .then(({ errors, delegateAccessToken }) => {
         if (errors) {
-          return console.log(errors)
+          alert('Something went wrong, please check console more for information')
+          return console.error(errors)
         }
 
         openDialogBox(delegateAccessToken)
       })
-      .catch(console.error)
+      .catch((error) => {
+        alert('Something went wrong, please check console more for information')
+        console.error(error)
+      })
       .finally(() => {
         isProcessing = false
       })
