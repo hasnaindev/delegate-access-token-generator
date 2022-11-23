@@ -1,67 +1,52 @@
-(() => {
-  const form = document.getElementById('form')
-  const storeNameInput = document.getElementById('store-name')
-  const adminApiAccessTokenInput = document.getElementById('admin-api-access-token')
+(async () => {
+  const app = new Vue({
+    el: '#app',
+    data: {
+      isLoading: false,
+      popupError: '',
+      popupContent: '',
+      storeName: '',
+      adminApiAccessToken: ''
+    },
+    methods: {
+      handleSubmit () {
+        if (this.isLoading) return
 
-  const dialogBoxContainer = document.getElementById('dialog-container')
+        this.isLoading = true
 
-  let isProcessing = false
-
-  form.addEventListener('submit', event => {
-    event.preventDefault()
-
-    if (isProcessing) return
-    isProcessing = true
-
-    const storeName = storeNameInput.value
-    const adminApiAccessToken = adminApiAccessTokenInput.value
-
-    fetchDelegateAccessToken({ storeName, adminApiAccessToken })
-      .then(({ errors, delegateAccessToken }) => {
-        if (errors) {
-          alert('Something went wrong, please check console more for information')
-          return console.error(errors)
-        }
-
-        openDialogBox(delegateAccessToken)
-      })
-      .catch((error) => {
-        alert('Something went wrong, please check console more for information')
-        console.error(error)
-      })
-      .finally(() => {
-        isProcessing = false
-      })
-  })
-
-  async function fetchDelegateAccessToken ({ storeName, adminApiAccessToken }) {
-    if (!storeName || !adminApiAccessToken) return
-
-    const response = await fetch('/api/gat', {
-      method: 'POST',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
+        this.generateDelegateAccessToken()
+          .then(({ delegateAccessToken }) => {
+            this.popupContent = delegateAccessToken
+          })
+          .catch((error) => {
+            console.error(error.message)
+            this.popupError = error.message
+          })
+          .finally(() => {
+            this.isLoading = false
+          })
       },
-      body: JSON.stringify({ storeName, adminApiAccessToken })
-    })
+      handleClosePopupError () {
+        this.popupError = ''
+      },
+      handleClosePopupContent () {
+        navigator.clipboard.writeText(this.popupContent)
+        this.popupContent = ''
+      },
+      async generateDelegateAccessToken () {
+        const { storeName, adminApiAccessToken } = this
 
-    return response.json()
-  }
+        try {
+          const response = await axios.post('/api/gat', {
+            storeName,
+            adminApiAccessToken
+          })
 
-  dialogBoxContainer.querySelector('button').addEventListener('click', () => {
-    navigator.clipboard.writeText(dialogBoxContainer.querySelector('#content').value)
-
-    closeDialogBox()
+          return response.data
+        } catch (error) {
+          throw error.response.data
+        }
+      }
+    }
   })
-
-  const openDialogBox = content => {
-    dialogBoxContainer.style.display = 'block'
-    dialogBoxContainer.querySelector('#content').value = content
-  }
-
-  const closeDialogBox = () => {
-    dialogBoxContainer.style.display = 'none'
-    dialogBoxContainer.querySelector('#content').value = ''
-  }
 })()

@@ -19,7 +19,11 @@ app.get('/', (req, res) => res.render('index'))
 app.get('*', (req, res) => res.status(302).redirect('/'))
 
 app.post('/api/gat', async (req, res) => {
-  const { storeName, adminApiAccessToken } = req.body
+  const { storeName = '', adminApiAccessToken = '' } = req.body
+
+  if (!storeName.trim() || !adminApiAccessToken.trim()) {
+    return res.status(400).json({ message: 'Invalid "Store name" or "Admin API access token"' })
+  }
 
   try {
     const response = await fetch(`https://${storeName}.myshopify.com/admin/api/2022-10/graphql.json`, {
@@ -55,6 +59,10 @@ app.post('/api/gat', async (req, res) => {
     })
 
     const { data } = await response.json()
+
+    if (!data) {
+      return res.status(400).json({ message: 'Invalid "Store name" or "Admin API access token"' })
+    }
 
     const userErrors = data.delegateAccessTokenCreate.userErrors
 
