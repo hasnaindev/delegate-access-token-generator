@@ -5,4 +5,5 @@ Visit https://dat-generator.herokuapp.com to generate a DAT (Delegate Access Tok
 Make sure to grab your "Shop Name" and "Admin API Access Token" as both are required to generate a DAT.
 
 Scopes: All
+
 Expiry: 2 years
